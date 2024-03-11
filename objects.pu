@@ -1,0 +1,35 @@
+@startuml test
+rectangle "メンバー募集" {
+    agent "(ホスト)\n名前: zzz\n部屋: xxx" as H
+    agent "(部屋)\n名前: xxx\n" as R
+    agent "(ゲスト)\n名前: aaa" as G1
+    agent "(ゲスト)\n名前: bbb" as G2
+    H 0- R : Has
+    R 0-- G1 : Has
+    R 0-- G2 : Has
+}
+
+rectangle "ゲーム" as Game{
+    rectangle "プレイヤー" {
+        agent "(質問者)\n名前: zzz" as Q
+        agent "(回答者)\n名前: aaa" as A1
+        agent "(回答者)\n名前: bbb" as A2
+    }
+    agent "(お題)\n内容: 〇〇...\n答え: ××だから" as theme
+
+    rectangle "進行" {
+        agent "(質問)\n□□□ですか？" as question1
+        agent "(回答)\n関係ありません" as answer1
+        agent "(質問)\n△△△ですか？" as question2
+        agent "(回答)\nはい" as answer2
+    }
+
+    Q 0-left- theme: 出題
+    A1 0-- question1
+    Q 0-- answer1
+    A2 0-- question2
+    Q 0-- answer2
+}
+R -right--> Game
+
+@enduml

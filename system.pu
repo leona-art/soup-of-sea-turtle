@@ -1,0 +1,25 @@
+@startuml system
+title システム構成図
+
+actor Host as H
+actor Guest as G
+actor Player as P
+H --|> P
+G --|> P
+
+rectangle "部屋" as Room
+
+
+H - Room : 管理
+Room - G : 参加
+
+note top of Room
+  部屋はプレイヤーを管理する
+end note
+
+rectangle "ゲーム" as Game
+Room ..> Game : 開始
+Room <.. Game : 終了
+
+
+@enduml

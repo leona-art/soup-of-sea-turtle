@@ -1,0 +1,25 @@
+@startuml room manager
+left to right direction
+actor Host as H
+rectangle "room manager" {
+    (部屋を作成する) as create
+    (部屋を削除する) as delete
+    (部屋を開ける\n[参加可能にする]) as open
+    (部屋を閉じる\n[参加不可にする]) as close
+    H --> create
+    H --> delete
+    H --> open
+    H --> close
+    open ...> room
+}
+
+actor Guest as G
+rectangle room {
+    (参加する) as join
+    (退出する) as leave
+    join <-- G
+    leave <-- G
+}
+
+
+@enduml
