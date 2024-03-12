@@ -4,3 +4,5 @@ pub mod host;
 pub mod member;
 pub mod party;
 pub mod player;
+pub mod room;
+pub mod guest;

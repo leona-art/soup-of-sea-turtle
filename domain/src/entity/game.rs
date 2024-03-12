@@ -2,7 +2,6 @@ mod error;
 mod state;
 use self::error::GameError;
 use self::state::GameState;
-use super::member::Member;
 use super::{party::Party, player::Player};
 use crate::common::id::Id;
 use std::error::Error;
@@ -14,7 +13,7 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(party: Party) -> Game {
+    pub fn new(party: Party) -> Self {
         Game {
             id: Id::new(),
             state: GameState::new(),

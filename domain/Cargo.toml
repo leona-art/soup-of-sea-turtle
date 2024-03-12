@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 thiserror = "1.0.57"
+uuid = { version = "1.7.0", features = ["v4"] }

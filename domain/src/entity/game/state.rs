@@ -5,10 +5,10 @@ pub enum GameState {
 }
 
 impl GameState{
-    pub fn new() -> GameState {
+    pub fn new() -> Self {
         GameState::Setup
     }
-    pub fn next(&self) -> GameState {
+    pub fn next(&self) -> Self {
         match self {
             GameState::Setup => GameState::Play,
             GameState::Play => GameState::End,

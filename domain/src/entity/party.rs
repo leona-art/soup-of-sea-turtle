@@ -1,6 +1,6 @@
 mod error;
+mod repository;
 use self::error::PartyError;
-use super::member::Member;
 use crate::common::id::Id;
 
 const MIN_PARTY_MEMBERS: usize = 2;
@@ -15,7 +15,7 @@ pub struct Party {
 }
 
 impl Party {
-    pub fn new(members: &[Member]) -> Result<Party, PartyError> {
+    pub fn new(members: &[Member]) -> Result<Self, PartyError> {
         // パーティーメンバーの数チェック
         if members.len() < MIN_PARTY_MEMBERS || members.len() > MAX_PARTY_MEMBERS {
             return Err(PartyError::InvalidMembersCount);
@@ -51,7 +51,7 @@ mod tests {
     #[test]
     fn test_new_party() {
         // 正常系
-        let members = vec![
+        let members = [
             Member::Questioner(Player::new(PlayerName::new("questioner"))),
             Member::Guesser(Player::new(PlayerName::new("guesser"))),
         ];
@@ -59,9 +59,8 @@ mod tests {
         assert!(party.is_ok());
 
         // メンバーが10人以上
-        let members = vec![
+        let members = [
             Member::Questioner(Player::new(PlayerName::new("questioner"))),
-            Member::Guesser(Player::new(PlayerName::new("guesser"))),
             Member::Guesser(Player::new(PlayerName::new("guesser"))),
             Member::Guesser(Player::new(PlayerName::new("guesser"))),
             Member::Guesser(Player::new(PlayerName::new("guesser"))),
@@ -77,19 +76,19 @@ mod tests {
         assert!(party.is_err());
 
         // Questionerが0人
-        let members = vec![Member::Guesser(Player::new(PlayerName::new("guesser")))];
+        let members = [Member::Guesser(Player::new(PlayerName::new("guesser")))];
         let party = Party::new(&members);
         assert!(party.is_err());
 
         // guesserが0人
-        let members = vec![Member::Questioner(Player::new(PlayerName::new(
+        let members = [Member::Questioner(Player::new(PlayerName::new(
             "questioner",
         )))];
         let party = Party::new(&members);
         assert!(party.is_err());
 
         // Questionerが2人
-        let members = vec![
+        let members = [
             Member::Questioner(Player::new(PlayerName::new("questioner"))),
             Member::Questioner(Player::new(PlayerName::new("questioner"))),
             Member::Guesser(Player::new(PlayerName::new("guesser"))),
@@ -97,7 +96,7 @@ mod tests {
         let party = Party::new(&members);
         assert!(party.is_err());
 
-        let members = vec![
+        let members = [
             Member::Questioner(Player::new(PlayerName::new("questioner"))),
             Member::Questioner(Player::new(PlayerName::new("Questioner"))),
             Member::Guesser(Player::new(PlayerName::new("guesser"))),
