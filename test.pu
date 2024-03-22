@@ -1,0 +1,12 @@
+@startuml class
+
+class Scraper {
+    -url: string
+    -data: string
+    find_by_xpath(xpath: string): string
+}
+
+
+
+
+@enduml

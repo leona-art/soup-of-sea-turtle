@@ -1,29 +1,49 @@
-mod error;
-mod state;
-use self::error::GameError;
-use self::state::GameState;
-use super::{party::Party, player::Player};
-use crate::common::id::Id;
-use std::error::Error;
+pub mod id;
+pub mod phase;
+pub mod players;
+use id::{GameId,GameIdError};
+use players::Players;
+use phase::GamePhase;
+use thiserror::Error;
 
-pub struct Game {
-    id: Id,
-    state: GameState,
-    party: Party,
+#[derive(Error,Debug)]
+pub enum GameError{
+    // 不正なフェーズに変更しようとした場合
+    #[error("Invalid phase: {0}")]
+    InvalidPhase(String),
 }
 
-impl Game {
-    pub fn new(party: Party) -> Self {
-        Game {
-            id: Id::new(),
-            state: GameState::new(),
-            party,
+pub struct Game{
+    id:GameId,
+    players:Players,
+    phase:GamePhase,
+}
+
+impl Game{
+    pub fn change_phase(&mut self,phase:GamePhase)->Result<(),GameError>{
+        match phase {
+            GamePhase::RoleDetermination => {
+                if self.phase != GamePhase::Result{
+                    return Err(GameError::InvalidPhase(format!("{:?}",self.phase)));
+                }
+            },
+            GamePhase::RaisingQuestion => {
+                if self.phase != GamePhase::RoleDetermination{
+                    return Err(GameError::InvalidPhase(format!("{:?}",self.phase)));
+                }
+            },
+            GamePhase::Questioning => {
+                if self.phase != GamePhase::RaisingQuestion{
+                    return Err(GameError::InvalidPhase(format!("{:?}",self.phase)));
+                }
+            },
+            GamePhase::Result => {
+                if self.phase != GamePhase::Questioning{
+                    return Err(GameError::InvalidPhase(format!("{:?}",self.phase)));
+                }
+            },
         }
-    }
-    pub fn start(&mut self) {
-        self.state = GameState::Play;
-    }
-    pub fn end(&mut self) {
-        self.state = GameState::End;
+        self.phase = phase;
+        Ok(())
     }
 }

@@ -1,0 +1,40 @@
+@startuml pal
+left to right direction
+rectangle Users {
+    actor User1
+    actor User2
+}
+
+rectangle Cloud {
+    rectangle "Instance(Server)" as Instance
+    note right of Instance
+        1つのインスタンスで1つのゲームが動作
+    end note
+
+    rectangle "API Manager" as APIManager
+    note right of APIManager
+        インスタンス毎にリソースの使用情報を取得
+    end note
+
+    Users --> Instance : Game Play
+    Instance -> APIManager : リソースの使用情報を取得
+}
+
+rectangle "請求システム" as Stripe
+
+note right of Stripe
+    決済を提供するサービス
+    使った分だけ割り勘して請求する
+end note
+
+Stripe <-- APIManager : 請求
+Stripe --> APIManager : 支払い
+
+User1 --> Stripe : クレカ登録
+User2 --> Stripe : クレカ登録
+note right of User1
+    遊ぶゲームを選択
+    遊んでないゲームの分の請求はない
+end note
+
+@enduml

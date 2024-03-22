@@ -1,0 +1,44 @@
+@startuml aggr
+
+rectangle 部屋集約 {
+    object "部屋" as Room {
+        ID
+        部屋名
+    }
+    object "メンバー" as Members {
+        ID
+        名前
+    }
+
+    Room "1" *-- "1..n" Members
+}
+
+rectangle ユーザー集約 {
+    object "ユーザー" as User {
+        ID
+        名前
+    }
+
+    Members <-- User
+}
+
+rectangle ゲーム集約 {
+    object "ゲーム" as Game {
+        ID
+    }
+    object "プレイヤー" as Player {
+        ID
+        役職
+    }
+    object "ゲームフェーズ" as Phase {
+        フェーズ
+    }
+
+    Game "1" *-- "1..n" Player
+    User --> Player
+
+    Room "1" -- "1" Game
+    Game "1" -- "1" Phase
+
+}
+@enduml
