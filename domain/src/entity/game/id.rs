@@ -9,7 +9,7 @@ pub enum GameIdError {
     InvailedValue(String),
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq,PartialOrd,Ord)]
 pub struct GameId {
     value: Uuid,
 }
@@ -35,6 +35,7 @@ impl FromStr for GameId {
             .map_err(|_| GameIdError::InvailedValue(s.to_string()))
     }
 }
+
 
 #[cfg(test)]
 mod tests {

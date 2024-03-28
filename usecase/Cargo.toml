@@ -1,10 +1,12 @@
 [package]
 edition = "2021"
-name = "domain"
+name = "usecase"
 version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+domain = {path = "../domain"}
+infra = {path = "../infra"}
 thiserror = {workspace = true}
-uuid = {version = "1.7.0", features = ["v4"]}
+serde={workspace = true}

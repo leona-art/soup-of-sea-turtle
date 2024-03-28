@@ -26,19 +26,46 @@ rectangle ゲーム集約 {
     object "ゲーム" as Game {
         ID
     }
-    object "プレイヤー" as Player {
-        ID
-        役職
-    }
     object "ゲームフェーズ" as Phase {
         フェーズ
     }
+    object "役職選択" as SelectRole {
+        プレイヤー
+    }
+    object "テーマ選択" as SelectSubject {
+        テーマ
+        プレイヤー
+    }
+    object "QA" as QA {
+        プレイヤー
+        ログ
+    }
+    object "結果" as Result {
+        結果
+    }
 
-    Game "1" *-- "1..n" Player
-    User --> Player
+    Game "1" *-- "1..n" User
 
     Room "1" -- "1" Game
     Game "1" -- "1" Phase
 
+    Phase --- SelectRole
+    Phase --- SelectSubject
+    Phase --- QA
+    Phase --- Result
+
+
+}
+
+rectangle ログ集約 {
+    object "ログ" as Log {
+        ID
+        質問者
+        質問
+        回答
+    }
+
+    QA "1" *-- "1..n" Log
+    Result "1" *-- "1..n" Log
 }
 @enduml

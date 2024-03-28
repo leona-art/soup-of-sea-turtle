@@ -6,6 +6,8 @@ const MAX_MEMBERS: usize = 5;
 pub enum MembersError{
     #[error("Members is full. please use {} members or less.",MAX_MEMBERS)]
     Full,
+    #[error("user {0} already exists.")]
+    AlreadyExists(String),
 }
 #[derive(Debug,Clone,Eq,PartialEq)]
 pub struct Members(Vec<User>);
@@ -18,11 +20,25 @@ impl Members{
         if self.0.len() >= MAX_MEMBERS{
             return Err(MembersError::Full);
         }
+        if self.0.iter().any(|u| u.id == user.id){
+            return Err(MembersError::AlreadyExists(user.name()));
+        }
         self.0.push(user);
         Ok(())
     }
     pub fn remove(&mut self,user_id:&UserId){
-        self.0.retain(|user| *user.id() != *user_id);
+        self.0.retain(|user| user.id != *user_id);
+    }
+}
+
+impl TryFrom<Vec<User>> for Members{
+    type Error = MembersError;
+    fn try_from(users:Vec<User>) -> Result<Self,Self::Error>{
+        let mut members = Members::new();
+        for user in users{
+            members.add(user)?;
+        }
+        Ok(members)
     }
 }
 
@@ -65,7 +81,7 @@ mod tests{
         let mut members = Members::new();
         let user = User::new("test").unwrap();
         members.add(user.clone()).unwrap();
-        members.remove(user.id());
+        members.remove(&user.id);
         assert_eq!(members.0.len(),0);
     }
 }

@@ -1,48 +1,49 @@
+pub mod answer;
 pub mod id;
 pub mod phase;
 pub mod players;
-use id::{GameId,GameIdError};
-use players::Players;
-use phase::GamePhase;
+pub mod question;
+pub mod repository;
+pub mod subject;
+use id::GameId;
+use phase::{GamePhase, SelectRolePhase};
 use thiserror::Error;
 
-#[derive(Error,Debug)]
-pub enum GameError{
+use super::user::User;
+
+#[derive(Error, Debug)]
+pub enum GameError {
     // 不正なフェーズに変更しようとした場合
     #[error("Invalid phase: {0}")]
     InvalidPhase(String),
 }
 
-pub struct Game{
-    id:GameId,
-    players:Players,
-    phase:GamePhase,
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct Game {
+    id: GameId,
+    users: Vec<User>,
+    phase: GamePhase,
 }
 
-impl Game{
-    pub fn change_phase(&mut self,phase:GamePhase)->Result<(),GameError>{
-        match phase {
-            GamePhase::RoleDetermination => {
-                if self.phase != GamePhase::Result{
-                    return Err(GameError::InvalidPhase(format!("{:?}",self.phase)));
-                }
-            },
-            GamePhase::RaisingQuestion => {
-                if self.phase != GamePhase::RoleDetermination{
-                    return Err(GameError::InvalidPhase(format!("{:?}",self.phase)));
-                }
-            },
-            GamePhase::Questioning => {
-                if self.phase != GamePhase::RaisingQuestion{
-                    return Err(GameError::InvalidPhase(format!("{:?}",self.phase)));
-                }
-            },
-            GamePhase::Result => {
-                if self.phase != GamePhase::Questioning{
-                    return Err(GameError::InvalidPhase(format!("{:?}",self.phase)));
-                }
-            },
+impl Game {
+    pub fn new(users: &[User]) -> Self {
+        Self {
+            id: GameId::new(),
+            users: users.to_vec(),
+            phase: GamePhase::SelectRole(SelectRolePhase::new()),
         }
+    }
+    pub fn id(&self) -> String {
+        self.id.to_string()
+    }
+    pub fn change_phase(&mut self, phase: GamePhase) -> Result<(), GameError> {
+        if self.phase.is_next(&phase) {
+            return Err(GameError::InvalidPhase(format!(
+                "{:?} -> {:?}",
+                self.phase, phase
+            )));
+        }
+
         self.phase = phase;
         Ok(())
     }
