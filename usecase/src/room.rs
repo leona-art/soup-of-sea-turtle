@@ -78,6 +78,10 @@ where R:RoomRepository {
             None => Err(GetRoomError::RoomNotFound)
         }
     }
+    pub fn get_rooms(&self) -> Result<Vec<RoomDto>,GetRoomError>{
+        let rooms = self.repository.find_all()?;
+        Ok(rooms.into_iter().map(|r|r.into()).collect())
+    }
 }
 
 #[derive(Error,Debug)]

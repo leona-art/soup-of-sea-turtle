@@ -12,4 +12,5 @@ infra = {path = "../infra"}
 serde = {workspace = true}
 serde_json = {workspace = true}
 tokio = {version = "1.36.0", features = ["full"]}
+tower-http = { version = "0.5.2", features = ["cors"] }
 usecase = {path = "../usecase"}

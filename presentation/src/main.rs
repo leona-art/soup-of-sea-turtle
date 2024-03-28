@@ -2,13 +2,14 @@ use std::sync::Arc;
 
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
+    http::{Method, StatusCode},
     routing::{get, post},
     Json, Router,
 };
 
 use infra::in_memory::{InMemoryRoomRepository, InMemoryUserRepository};
 use serde_json::Value;
+use tower_http::cors::{Any, CorsLayer,AllowOrigin};
 use usecase::{
     room::{AddMemberError, AddMemberService, CreateRoomService, GetRoomService, RoomDto},
     user::{CreateUserService, GetUserError, GetUserService, UserDto},
@@ -16,18 +17,26 @@ use usecase::{
 
 #[tokio::main]
 async fn main() {
+    let cors = CorsLayer::new()
+        .allow_origin(AllowOrigin::exact("http://localhost:3000".parse().unwrap()))
+        .allow_methods(Any)
+        .allow_headers(Any);
+
+
     let user_repository = Arc::new(InMemoryUserRepository::new());
     let room_repository = Arc::new(InMemoryRoomRepository::new());
     let app = Router::new()
         .route("/user/:id", get(get_user))
         .route("/user/create/:name", post(create_user))
         .with_state(user_repository)
+        .route("/room", get(get_rooms))
         .route("/room/:id", get(get_room))
         .route("/room/create/:name", post(create_room))
         .route("/room/join/:room_id", post(add_member))
-        .with_state(room_repository);
+        .with_state(room_repository)
+        .layer(cors);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3333").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 
@@ -61,6 +70,16 @@ async fn create_room(
     let service = CreateRoomService::new(repository);
     match service.create_room(&name) {
         Ok(room) => Ok(Json(room)),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
+}
+
+async fn get_rooms(
+    State(repository): State<Arc<InMemoryRoomRepository>>,
+) -> Result<Json<Vec<RoomDto>>, StatusCode> {
+    let service = GetRoomService::new(repository);
+    match service.get_rooms() {
+        Ok(rooms) => Ok(Json(rooms)),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
     }
 }
