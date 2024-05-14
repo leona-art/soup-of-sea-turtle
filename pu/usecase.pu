@@ -1,0 +1,24 @@
+@startuml usecase
+actor User
+actor GameCreator
+actor Player
+actor AI
+
+rectangle "ウミガメSNS" {
+    usecase "Create Game Room" as UCCreateGameRoom
+    usecase "Select Problem" as UCSelectProblem
+    usecase "Ask Question" as UCAskQuestion
+    usecase "Answer Question" as UCAnswerQuestion
+    usecase "End Game" as UCEndGame
+    usecase "Submit Problem" as UCSubmitProblem
+}
+
+User --> UCSubmitProblem
+GameCreator --> UCCreateGameRoom
+GameCreator --> UCSelectProblem
+Player --> UCAskQuestion
+AI --> UCAnswerQuestion
+Player --> UCEndGame
+GameCreator --> UCEndGame
+
+@enduml

@@ -1,0 +1,51 @@
+@startuml
+
+class User {
+    +userId: String
+    +username: String
+    +email: String
+    +password: String
+    +createRoom()
+    +joinRoom()
+    +askQuestion()
+}
+
+class GameRoom {
+    +roomId: String
+    +roomName: String
+    +creatorId: String
+    +startGame()
+    +endGame()
+    +selectProblem()
+}
+
+class Problem {
+    +problemId: String
+    +title: String
+    +description: String
+    +solution: String
+    +submitProblem()
+}
+
+class Question {
+    +questionId: String
+    +roomId: String
+    +userId: String
+    +content: String
+    +ask()
+}
+
+class Answer {
+    +answerId: String
+    +questionId: String
+    +response: String
+    +answer()
+}
+
+User "1" -- "0..*" GameRoom: creates
+User "0..*" -- "0..*" GameRoom: joins
+GameRoom "1" -- "0..*" Problem: uses
+GameRoom "1" -- "0..*" Question: contains
+Question "1" -- "1" Answer: has
+
+@enduml

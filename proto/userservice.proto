@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package user;
+
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+    rpc GetUser(GetUserRequest) returns (GetUserResponse);
+    rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse);
+}
+
+message CreateUserRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message CreateUserResponse {
+    string userId = 1;
+}
+
+message GetUserRequest {
+    string userId = 1;
+}
+
+message GetUserResponse {
+    string userId = 1;
+    string username = 2;
+    string email = 3;
+}
+
+message AuthenticateUserRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message AuthenticateUserResponse {
+    string userId = 1;
+    bool authenticated = 2;
+}

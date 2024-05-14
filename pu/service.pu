@@ -1,0 +1,27 @@
+@startuml services
+
+package "Frontend (TypeScript, Solid.js, SolidStart)" {
+    [WebApp]
+}
+
+package "Backend (Rust, tonic)" {
+    [UserService]
+    [GameRoomService]
+    [ProblemService]
+    [QuestionService]
+    [AnswerService]
+}
+
+package "AI Service" {
+    [AIResponseService]
+}
+
+WebApp --> UserService : gRPC
+WebApp --> GameRoomService : gRPC
+WebApp --> ProblemService : gRPC
+WebApp --> QuestionService : gRPC
+WebApp --> AnswerService : gRPC
+
+QuestionService --> AIResponseService : REST API
+
+@enduml
