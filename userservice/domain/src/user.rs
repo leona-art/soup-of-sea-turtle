@@ -1,20 +1,33 @@
+pub mod repository;
+pub mod user_email;
 pub mod user_identity;
 pub mod user_name;
-pub mod repository;
 
+use user_email::{UserEmail, UserEmailError};
 use user_identity::UserIdentity;
-use user_name::UserName;
+use user_name::{UserName, UserNameError};
+
+use thiserror::Error;
+#[derive(Debug, Error)]
+pub enum UserError {
+    #[error("{0}")]
+    UserNameError(#[from] UserNameError),
+    #[error("{0}")]
+    UserEmailError(#[from] UserEmailError),
+}
 
 pub struct User {
     id: user_identity::UserIdentity,
-    name: user_name::UserName,
+    name: UserName,
+    email: UserEmail,
 }
 
 impl User {
-    pub fn new(name: &str) -> Result<Self, user_name::UserNameError> {
+    pub fn new(name: &str, email: &str) -> Result<Self, UserError> {
         let id = UserIdentity::new();
-        let name = user_name::UserName::new(name)?;
-        Ok(User { id, name })
+        let name = UserName::new(name)?;
+        let email = UserEmail::new(email)?;
+        Ok(User { id, name, email })
     }
 
     pub fn id(&self) -> &str {
@@ -23,5 +36,8 @@ impl User {
 
     pub fn name(&self) -> &str {
         self.name.value()
+    }
+    pub fn email(&self) -> &str {
+        self.email.value()
     }
 }

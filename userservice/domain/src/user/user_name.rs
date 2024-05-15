@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-const MAX_USERNAME_LENGTH: usize = 100;
+const MAX_USERNAME_LENGTH: usize = 32;
 
 #[derive(Debug, Error)]
 pub enum UserNameError {
