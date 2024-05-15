@@ -11,8 +11,8 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(identity:&str,name: &str) -> Result<Self, user_name::UserNameError> {
-        let id = UserIdentity::new(identity);
+    pub fn new(name: &str) -> Result<Self, user_name::UserNameError> {
+        let id = UserIdentity::new();
         let name = user_name::UserName::new(name)?;
         Ok(User { id, name })
     }
