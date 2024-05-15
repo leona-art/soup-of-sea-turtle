@@ -1,7 +1,7 @@
 [workspace]
 
 members=[
-    "domain", "infra", "presentation", "usecase", "userservice/domain",
+    "domain", "infra", "presentation", "usecase", "userservice/domain", "userservice/usecase",
 ]
 
 [workspace.dependencies]
